@@ -38,6 +38,10 @@ class ServiceMessage {
     }
 
     private String escape(String str) {
-        str.replaceAll("\\|", "||").replaceAll("\n", "|n").replaceAll("'", "|'")
+        str.replaceAll("\\|", "||")
+            .replaceAll("\n", "|n")
+            .replaceAll("'", "|'")
+            .replaceAll("\\[", "|[")
+            .replaceAll("\\]", "|]")
     }
 }

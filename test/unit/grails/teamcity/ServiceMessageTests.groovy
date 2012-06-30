@@ -19,11 +19,12 @@ class ServiceMessageTests extends GroovyTestCase {
         message.attributes.multi = 'Line1\nLine2'
         message.attributes.apost = "It's hot"
         message.attributes.bar   = "Assert |"
+        message.attributes.brack = "[Hi]"
 
         def output = message.toString()
 
         assert output != null
-        assert output == "##teamcity[test apost='It|'s hot' bar='Assert ||' flowId='grails' multi='Line1|nLine2' timestamp='now']"
+        assert output == "##teamcity[test apost='It|'s hot' bar='Assert ||' brack='|[Hi|]' flowId='grails' multi='Line1|nLine2' timestamp='now']"
         println output
     }
 
