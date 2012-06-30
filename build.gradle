@@ -1,0 +1,18 @@
+apply plugin: "idea"
+
+repositories {
+    mavenCentral()
+}
+
+idea {
+    project {
+        jdkName "1.6"
+        ipr {
+            withXml { provider ->
+                def node = provider.asNode()
+                node.component.find { it.'@name' == 'VcsDirectoryMappings' }?.mapping[0].'@vcs' = 'Git'
+                node.append(new XmlParser().parse(file("ideaCodeStyle.xml")))
+            }
+        }
+    }
+}

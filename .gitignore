@@ -1,0 +1,12 @@
+*.class
+*.log
+*.iws
+*.iml
+*.ipr
+workspace.xml
+Thumbs.db
+target/
+logs/
+build/
+.idea/
+.gradle/
