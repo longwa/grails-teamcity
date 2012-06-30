@@ -2,7 +2,7 @@ eventTestSuiteStart = { name ->
     if( isEnabled() ) {
         def msg = loadMessageClass("ServiceMessage").newInstance("testSuiteStarted")
         msg.name = name
-        println msg.toString()
+        grailsConsole.log msg.toString()
     }
 }
 
@@ -10,7 +10,7 @@ eventTestSuiteEnd = { name ->
     if( isEnabled() ) {
         def msg = loadMessageClass("ServiceMessage").newInstance("testSuiteEnded")
         msg.name = name
-        println msg.toString()
+        grailsConsole.log msg.toString()
     }
 }
 
@@ -28,7 +28,7 @@ eventTestStart = { testName ->
     if( isEnabled() ) {
         def msg = loadMessageClass("ServiceMessage").newInstance("testStarted")
         msg.name = "${currentTestCaseName}.${testName}"
-        println msg.toString()
+        grailsConsole.log msg.toString()
     }
 }
 
@@ -44,7 +44,7 @@ eventTestFailure = { testName, failure, isError ->
             msg.message = failure
             msg.details = failure
         }
-        println msg.toString()
+        grailsConsole.log msg.toString()
     }
 }
 
@@ -52,7 +52,7 @@ eventTestEnd = { testName ->
     if( isEnabled() ) {
         def msg = loadMessageClass("ServiceMessage").newInstance("testFinished")
         msg.name = "${currentTestCaseName}.${testName}"
-        println msg.toString()
+        grailsConsole.log msg.toString()
     }
 }
 
