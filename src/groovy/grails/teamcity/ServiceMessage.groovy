@@ -16,14 +16,19 @@ class ServiceMessage {
 
         // Default attributes
         attributes.flowId = "grails"
-        attributes.timestamp = SimpleDateFormat.newInstance().format(new Date())
+        attributes.timestamp = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").format(new Date())
     }
 
     /**
      * Format the message
      */
     String toString() {
-        def attrString = attributes.collect { k,v -> "${k}='${v}'" }.join(" ")
+        def attrString = attributes.collect { k, v -> "${k}='${escape(v)}'" }.join(" ")
         "##teamcity[${messageName} ${attrString}]"
+    }
+
+    private String escape(String str) {
+        // TODO - Need to escape some things with "|"
+        str
     }
 }
