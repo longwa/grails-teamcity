@@ -70,6 +70,6 @@ loadMessageClass = { className ->
 }
 
 isEnabled = {
-    System.getProperty("teamcity.version") != null
+    System.getenv("TEAMCITY_VERSION") != null
 }
 
