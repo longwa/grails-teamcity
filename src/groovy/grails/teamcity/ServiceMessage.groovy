@@ -10,7 +10,6 @@ class ServiceMessage {
 
     def attributes = [:] as TreeMap
     def messageName
-    def enabled
 
     ServiceMessage(def name) {
         messageName = name
@@ -18,7 +17,6 @@ class ServiceMessage {
         // Default attributes
         attributes.flowId = "grails"
         attributes.timestamp = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").format(new Date())
-
     }
 
     def propertyMissing(String name, value) {
