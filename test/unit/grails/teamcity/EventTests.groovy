@@ -1,7 +1,5 @@
 package grails.teamcity
 
-import grails.build.logging.GrailsConsole
-
 class EventTests extends GroovyTestCase {
     def script
     def mockConsole
