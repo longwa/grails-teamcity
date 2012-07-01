@@ -1,32 +1,14 @@
-// Dynamically load the service method class
-def messageClass = loadMessageClass("ServiceMessage")
-
-/**
- * Compile events
- */
-eventCompileStart = { type ->
-    def msg = messageClass.newInstance("compilationStarted")
-    msg.compiler = "groovyc"
-    msg.write(grailsConsole.&log)
-}
-
-eventCompileEnd = { type ->
-    def msg = messageClass.newInstance("compilationFinished")
-    msg.compiler = "groovyc"
-    msg.write(grailsConsole.&log)
-}
-
 /**
  * Test Events
  */
 eventTestSuiteStart = { name ->
-    def msg = messageClass.newInstance("testSuiteStarted")
+    def msg = loadMessageClass().newInstance("testSuiteStarted")
     msg.name = name
     msg.write(grailsConsole.&log)
 }
 
 eventTestSuiteEnd = { name ->
-    def msg = messageClass.newInstance("testSuiteFinished")
+    def msg = loadMessageClass().newInstance("testSuiteFinished")
     msg.name = name
     msg.write(grailsConsole.&log)
 }
@@ -41,14 +23,14 @@ eventTestCaseEnd = { testCaseName, out, err ->
 }
 
 eventTestStart = { testName ->
-    def msg = messageClass.newInstance("testStarted")
+    def msg = loadMessageClass().newInstance("testStarted")
     msg.name = "${currentTestCaseName}.${testName}"
     msg.captureStandardOutput = true
     msg.write(grailsConsole.&log)
 }
 
 eventTestFailure = { testName, failure, isError ->
-        def msg = messageClass.newInstance("testFailed")
+        def msg = loadMessageClass().newInstance("testFailed")
         msg.name = "${currentTestCaseName}.${testName}"
         if (failure instanceof Throwable) {
             msg.message = failure.message
@@ -62,14 +44,14 @@ eventTestFailure = { testName, failure, isError ->
 }
 
 eventTestEnd = { testName ->
-    def msg = messageClass.newInstance("testFinished")
+    def msg = loadMessageClass().newInstance("testFinished")
     msg.name = "${currentTestCaseName}.${testName}"
     msg.write(grailsConsole.&log)
 }
 
 // Make sure the classes are loaded and compile if needed
-def loadMessageClass(className) {
-    def doLoad = {-> classLoader.loadClass("grails.teamcity.${className}") }
+def loadMessageClass() {
+    def doLoad = {-> classLoader.loadClass("grails.teamcity.ServiceMessage") }
     try {
         doLoad()
     }
@@ -79,4 +61,3 @@ def loadMessageClass(className) {
         doLoad()
     }
 }
-
