@@ -3,6 +3,8 @@
 *.iws
 *.iml
 *.ipr
+*.zip
+plugin.xml
 workspace.xml
 Thumbs.db
 target/
