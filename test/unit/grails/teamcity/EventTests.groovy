@@ -19,20 +19,6 @@ class EventTests extends GroovyTestCase {
         script = new GroovyShell(binding).evaluate(new File("scripts", "_Events.groovy"))
     }
 
-    void testCompileStart() {
-        MockConsole.metaClass.log << { msg ->
-            assert msg.contains("compilationStarted")
-        }
-        script.eventCompileStart("unit")
-    }
-
-    void testCompileEnd() {
-        MockConsole.metaClass.log << { msg ->
-            assert msg.contains("compilationFinished")
-        }
-        script.eventCompileEnd("unit")
-    }
-
     void testTestStart() {
         MockConsole.metaClass.log << { msg ->
             assert msg.contains("caseName.testName")
