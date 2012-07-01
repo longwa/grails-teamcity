@@ -1,4 +1,13 @@
 /**
+ * Packaging
+ */
+eventPackagingEnd = {
+    def msg = loadMessageClass().newInstance("progressMessage")
+    msg.text = "Packaging Complete"
+    msg.write(grailsConsole.&log)
+}
+
+/**
  * Test Events
  */
 eventTestSuiteStart = { name ->

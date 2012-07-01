@@ -47,4 +47,15 @@ class ServiceMessageTests extends GroovyTestCase {
         assert output != null
         assert output == "##teamcity[test flowId='grails' foo='true' timestamp='now']"
     }
+
+    void testExceptionFormatting() {
+        def e = new AssertionError("Something bad happened")
+        def message = new ServiceMessage("test")
+        message.detail = e
+        message.message = e.message
+
+        message.write { str ->
+            assert !str.contains("at grails.teamcity.ServiceMessageTests")
+        }
+    }
 }

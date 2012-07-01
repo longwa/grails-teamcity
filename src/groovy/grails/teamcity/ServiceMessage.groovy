@@ -1,6 +1,7 @@
 package grails.teamcity
 
 import java.text.SimpleDateFormat
+import org.codehaus.groovy.runtime.StackTraceUtils
 
 /**
  * A service message is the basic way of communicating with TeamCity by outputting specially formatted
@@ -10,6 +11,7 @@ class ServiceMessage {
 
     def attributes = [:] as TreeMap
     def messageName
+    def text = ""
 
     ServiceMessage(def name) {
         messageName = name
@@ -31,12 +33,17 @@ class ServiceMessage {
      * Format the message
      */
     String toString() {
-        def attrString = attributes.collect { k, v -> "${k}='${escape(v?.toString())}'" }.join(" ")
-        "##teamcity[${messageName} ${attrString}]"
+        def attrString = attributes.collect { k, v -> "${k}='${escape(valueToString(v))}'" }.join(" ")
+        if( text ) {
+            "##teamcity[${messageName} '${escape(text)}']"
+        }
+        else {
+            "##teamcity[${messageName} ${attrString}]"
+        }
     }
 
     /**
-     * Call the given logger function if enabled.
+     * Call the given logger function if service messages are enabled.
      * @param method that can take a single string argument
      */
     void write(Closure logger) {
@@ -52,11 +59,35 @@ class ServiceMessage {
         System.getenv("TEAMCITY_VERSION") != null
     }
 
-    private String escape(String str) {
+    protected String escape(String str) {
+        // Make sure you escape the escape character first
         str.replaceAll("\\|", "||")
             .replaceAll("\n", "|n")
+            .replaceAll("\r", "|r")
+            .replaceAll("\u0085", "|x")
+            .replaceAll("\u2028", "|l")
+            .replaceAll("\u2029", "|p")
             .replaceAll("'", "|'")
             .replaceAll("\\[", "|[")
             .replaceAll("\\]", "|]")
+    }
+
+    protected String valueToString(def val) {
+        if( val == null ) {
+            ""
+        }
+        else if( val instanceof Throwable) {
+            Throwable t = StackTraceUtils.deepSanitize(val)
+
+            // Convert the sanitize stack to a string
+            StringWriter stringWriter = new StringWriter()
+            PrintWriter printWriter = new PrintWriter(stringWriter)
+            t.printStackTrace(printWriter)
+
+            stringWriter.toString()
+        }
+        else {
+            val.toString()
+        }
     }
 }
