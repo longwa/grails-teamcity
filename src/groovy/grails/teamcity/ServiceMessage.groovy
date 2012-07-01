@@ -35,6 +35,23 @@ class ServiceMessage {
         "##teamcity[${messageName} ${attrString}]"
     }
 
+    /**
+     * Call the given logger function if enabled.
+     * @param method that can take a single string argument
+     */
+    void write(Closure logger) {
+        if( enabled ) {
+            logger(toString())
+        }
+    }
+
+    /**
+     * Only enable by default if TeamCity is in the environment
+     */
+    boolean isEnabled() {
+        System.getenv("TEAMCITY_VERSION") != null
+    }
+
     private String escape(String str) {
         str.replaceAll("\\|", "||")
             .replaceAll("\n", "|n")

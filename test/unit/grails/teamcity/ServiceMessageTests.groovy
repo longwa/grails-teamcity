@@ -10,7 +10,6 @@ class ServiceMessageTests extends GroovyTestCase {
 
         assert output != null
         assert output == "##teamcity[test flowId='grails' foo='bar' timestamp='now']"
-        println output
     }
 
     void testEscapeStrings() {
@@ -25,7 +24,6 @@ class ServiceMessageTests extends GroovyTestCase {
 
         assert output != null
         assert output == "##teamcity[test apost='It|'s hot' bar='Assert ||' brack='|[Hi|]' flowId='grails' multi='Line1|nLine2' timestamp='now']"
-        println output
     }
 
     void testPropertyAccess() {
@@ -37,16 +35,16 @@ class ServiceMessageTests extends GroovyTestCase {
 
         assert output != null
         assert output == "##teamcity[test flowId='grails' foo='bar' timestamp='now']"
-        println output
     }
 
-    /*
-    void testFailure() {
-        throw new Exception("Failed")
-    }
+    void testPropertyTypeConversion() {
+        def message = new ServiceMessage("test")
+        message.timestamp = 'now'
+        message.foo = true
 
-    void testAssertionFailure() {
-        assert 1 == 2
+        def output = message.toString()
+
+        assert output != null
+        assert output == "##teamcity[test flowId='grails' foo='true' timestamp='now']"
     }
-    */
 }

@@ -1,17 +1,34 @@
+// Dynamically load the service method class
+def messageClass = loadMessageClass("ServiceMessage")
+
+/**
+ * Compile events
+ */
+eventCompileStart = { type ->
+    def msg = messageClass.newInstance("compilationStarted")
+    msg.compiler = "groovyc"
+    msg.write(grailsConsole.&log)
+}
+
+eventCompileEnd = { type ->
+    def msg = messageClass.newInstance("compilationFinished")
+    msg.compiler = "groovyc"
+    msg.write(grailsConsole.&log)
+}
+
+/**
+ * Test Events
+ */
 eventTestSuiteStart = { name ->
-    if( isEnabled() ) {
-        def msg = loadMessageClass("ServiceMessage").newInstance("testSuiteStarted")
-        msg.name = name
-        grailsConsole.log msg.toString()
-    }
+    def msg = messageClass.newInstance("testSuiteStarted")
+    msg.name = name
+    msg.write(grailsConsole.&log)
 }
 
 eventTestSuiteEnd = { name ->
-    if( isEnabled() ) {
-        def msg = loadMessageClass("ServiceMessage").newInstance("testSuiteEnded")
-        msg.name = name
-        grailsConsole.log msg.toString()
-    }
+    def msg = messageClass.newInstance("testSuiteFinished")
+    msg.name = name
+    msg.write(grailsConsole.&log)
 }
 
 // No message in TeamCity for these, just need to get information for use in the other messages
@@ -19,24 +36,21 @@ def currentTestCaseName = ""
 eventTestCaseStart = { testCaseName ->
     currentTestCaseName = testCaseName
 }
-
 eventTestCaseEnd = { testCaseName, out, err ->
     currentTestCaseName = ""
 }
 
 eventTestStart = { testName ->
-    if( isEnabled() ) {
-        def msg = loadMessageClass("ServiceMessage").newInstance("testStarted")
-        msg.name = "${currentTestCaseName}.${testName}"
-        grailsConsole.log msg.toString()
-    }
+    def msg = messageClass.newInstance("testStarted")
+    msg.name = "${currentTestCaseName}.${testName}"
+    msg.captureStandardOutput = true
+    msg.write(grailsConsole.&log)
 }
 
 eventTestFailure = { testName, failure, isError ->
-    if( isEnabled() ) {
-        def msg = loadMessageClass("ServiceMessage").newInstance("testFailed")
+        def msg = messageClass.newInstance("testFailed")
         msg.name = "${currentTestCaseName}.${testName}"
-        if( failure instanceof Throwable ) {
+        if (failure instanceof Throwable) {
             msg.message = failure.message
             msg.details = failure
         }
@@ -44,32 +58,25 @@ eventTestFailure = { testName, failure, isError ->
             msg.message = failure
             msg.details = failure
         }
-        grailsConsole.log msg.toString()
-    }
+        msg.write(grailsConsole.&log)
 }
 
 eventTestEnd = { testName ->
-    if( isEnabled() ) {
-        def msg = loadMessageClass("ServiceMessage").newInstance("testFinished")
-        msg.name = "${currentTestCaseName}.${testName}"
-        grailsConsole.log msg.toString()
-    }
+    def msg = messageClass.newInstance("testFinished")
+    msg.name = "${currentTestCaseName}.${testName}"
+    msg.write(grailsConsole.&log)
 }
 
 // Make sure the classes are loaded and compile if needed
-loadMessageClass = { className ->
+def loadMessageClass(className) {
     def doLoad = {-> classLoader.loadClass("grails.teamcity.${className}") }
     try {
         doLoad()
     }
-    catch(ClassNotFoundException ignored) {
+    catch (ClassNotFoundException ignored) {
         includeTargets << grailsScript("_GrailsCompile")
         compile()
         doLoad()
     }
-}
-
-isEnabled = {
-    System.getenv("TEAMCITY_VERSION") != null
 }
 
