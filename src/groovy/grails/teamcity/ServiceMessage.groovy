@@ -8,12 +8,11 @@ import org.codehaus.groovy.runtime.StackTraceUtils
  * messages to the build log.
  */
 class ServiceMessage {
-
     def attributes = [:] as TreeMap
     def messageName
     def text = ""
 
-    ServiceMessage(def name) {
+    ServiceMessage(name) {
         messageName = name
 
         // Default attributes

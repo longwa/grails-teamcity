@@ -7,6 +7,14 @@ eventPackagingEnd = {
     msg.write(grailsConsole.&log)
 }
 
+// Make the build number available via a TeamCity property
+eventStatusFinal = {
+    def msg = loadMessageClass().newInstance("setParameter")
+    msg.name = "grails.app.version"
+    msg.value = metadata.'app.version'
+    msg.write(grailsConsole.&log)
+}
+
 /**
  * Test Events
  */
